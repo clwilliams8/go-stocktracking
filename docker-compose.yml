@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: go-stocktracking-backend
+    env_file:
+      - ./backend/.env
+    environment:
+      - PORT=8080
+      - GIN_MODE=release
+    networks:
+      - stocktracking-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: go-stocktracking-frontend
+    environment:
+      - NEXT_PUBLIC_API_URL=https://go-stocktracking.ai/api
+    networks:
+      - stocktracking-network
+    restart: unless-stopped
+    depends_on:
+      - backend
+
+  nginx:
+    image: nginx:alpine
+    container_name: go-stocktracking-nginx
+    ports:
+      - "127.0.0.3:80:80"
+      - "127.0.0.3:443:443"
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/nginx/certs:/ssl:ro
+    networks:
+      stocktracking-network:
+        ipv4_address: 192.168.202.10
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped
+
+networks:
+  stocktracking-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.202.0/24
+          gateway: 192.168.202.1

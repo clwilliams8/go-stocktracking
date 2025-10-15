@@ -51,8 +51,24 @@ Access at: `https://go-stocktracking.ai`
 - `GET /health` - Health check
 - `GET /api/stock/:symbol` - Get stock data by ticker
 
+## Development Rules
+
+### CRITICAL: Single Page Application (SPA) Requirements
+**NEVER write or allow code that would make this app behave like a non-SPA.**
+
+Strict requirements:
+- ❌ **NO hard refreshes** - Never use `window.location.reload()`, `window.location.href`, or any form of page refresh
+- ❌ **NO full page navigations** - Only use Next.js `<Link>` components or `useRouter()` for navigation
+- ❌ **NO form submissions** that cause page reloads - Always use `e.preventDefault()` and handle with JavaScript
+- ✅ **YES to client-side routing** - Use Next.js App Router with client components (`"use client"`)
+- ✅ **YES to smooth transitions** - All navigation and state changes should be instant without page loads
+- ✅ **YES to dynamic updates** - Use React state, not page refreshes, to update the UI
+
+If you encounter code that violates these rules, you MUST refactor it to be SPA-compliant.
+
 ## Notes
 - Using free tier of stock APIs (rate limits apply)
 - Self-signed SSL for local development
 - Never commit `.env` files or API keys
 - Follow the implementation plan in `plan.md`
+- This is a SPA - maintain smooth, no-refresh user experience at all times
