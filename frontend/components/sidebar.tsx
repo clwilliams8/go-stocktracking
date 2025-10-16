@@ -2,14 +2,14 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, TrendingUp, Settings, BarChart3 } from "lucide-react"
+import { LayoutDashboard, TrendingUp, BookOpen, BarChart3 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Trending", href: "/trending", icon: TrendingUp },
   { name: "Analytics", href: "/analytics", icon: BarChart3 },
-  { name: "Settings", href: "/settings", icon: Settings },
+  { name: "How does this app work?", href: "/how-it-works", icon: BookOpen },
 ]
 
 export function Sidebar() {
