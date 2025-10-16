@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { LayoutDashboard, TrendingUp, BookOpen, BarChart3 } from "lucide-react"
+import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
 const navigation = [
@@ -31,14 +32,26 @@ export function Sidebar() {
               key={item.name}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium relative transition-colors duration-300",
                 isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                  ? "text-primary-foreground"
+                  : "text-muted-foreground hover:text-accent-foreground"
               )}
             >
-              <item.icon className="h-5 w-5" />
-              {item.name}
+              {isActive && (
+                <motion.div
+                  layoutId="activeNav"
+                  className="absolute inset-0 bg-primary rounded-lg"
+                  initial={false}
+                  transition={{
+                    type: "spring",
+                    stiffness: 500,
+                    damping: 35,
+                  }}
+                />
+              )}
+              <item.icon className="h-5 w-5 relative z-10" />
+              <span className="relative z-10">{item.name}</span>
             </Link>
           )
         })}
